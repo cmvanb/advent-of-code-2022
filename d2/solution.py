@@ -1,9 +1,12 @@
 from enum import IntEnum
 
 class Shapes(IntEnum):
-    ROCK     = 1
-    PAPER    = 2
-    SCISSORS = 3
+    ROCK     = 0
+    PAPER    = 1
+    SCISSORS = 2
+
+def ScoreShape(shape):
+    return int(shape) + 1
 
 def ParseShape(letter):
     if letter == 'A' or letter == 'X':
@@ -14,7 +17,7 @@ def ParseShape(letter):
         return Shapes.SCISSORS
     raise ValueError('ParseShape expects one of [A, B, C, X, Y, Z].')
 
-def CalculateRoundOutcome(player, opponent):
+def ScoreRound(player, opponent):
     if player == opponent:
         return 3
 
@@ -28,6 +31,14 @@ def CalculateRoundOutcome(player, opponent):
 
     return 0
 
+def DecideShape(desiredOutcome, opponentShape):
+    if desiredOutcome == 'X':
+        return Shapes((int(opponentShape) - 1) % 3)
+    if desiredOutcome == 'Y':
+        return opponentShape
+    if desiredOutcome == 'Z':
+        return Shapes((int(opponentShape) + 1) % 3)
+
 def main():
     lines = []
 
@@ -36,14 +47,20 @@ def main():
             lines.append(line.strip('\n'))
 
     score = 0
-
     for line in lines:
-        assert len(line) == 3, 'Expecting input file with 3 chars per line.'
         opponent = ParseShape(line[0])
         player = ParseShape(line[2])
-        score = score + CalculateRoundOutcome(player, opponent) + player
+        score = score + ScoreRound(player, opponent) + ScoreShape(player)
 
-    print(f"Strategy yields score of {score}.")
+    print(f"Guessed strategy yields score of {score}.")
+
+    score = 0
+    for line in lines:
+        opponent = ParseShape(line[0])
+        player = DecideShape(line[2], opponent)
+        score = score + ScoreRound(player, opponent) + ScoreShape(player)
+
+    print(f"Applied strategy yields score of {score}.")
 
 if __name__ == '__main__':
     main()
