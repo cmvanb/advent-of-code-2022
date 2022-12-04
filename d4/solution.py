@@ -11,10 +11,7 @@ class Range():
         return self.start <= other.start and self.end >= other.end
 
     def overlaps(self, other):
-        return (self.start >= other.start and self.start <= other.end) \
-            or (self.end >= other.start and self.end <= other.end) \
-            or self.contains(other) \
-            or other.contains(self)
+        return self.end >= other.start and other.end >= self.start
 
 def main():
     lines = []
