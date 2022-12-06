@@ -1,19 +1,16 @@
 def check_candidate(candidate):
-    assert(len(candidate) == 4)
+    return len(set(candidate)) == len(candidate)
 
-    unique = list(set(candidate))
-    return len(unique) == 4
-
-def find_marker(signal):
-    assert(len(signal) >= 4)
+def find_marker(signal, length):
+    assert(len(signal) >= length)
 
     index = 0
-    candidate = signal[index:index + 4]
+    candidate = signal[index:index + length]
     while check_candidate(candidate) == False:
         index += 1
-        candidate = signal[index:index + 4]
+        candidate = signal[index:index + length]
 
-    return candidate, index + 4
+    return candidate, index + length
 
 def main():
     signals = []
@@ -21,8 +18,11 @@ def main():
         signals = map(lambda line: line.strip('\n'), file.readlines())
 
     for signal in signals:
-        marker, count = find_marker(signal)
-        print(f"{count} characters need to be processed before the marker `{marker}` is found.")
+        packet_marker, count = find_marker(signal, 4)
+        print(f"{count} characters need to be processed before the start-of-packet marker `{packet_marker}` is found.")
+
+        msg_marker, count = find_marker(signal, 14)
+        print(f"{count} characters need to be processed before the start-of-message marker `{msg_marker}` is found.")
 
 if __name__ == '__main__':
     main()
