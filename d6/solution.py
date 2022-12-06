@@ -5,13 +5,12 @@ def find_marker(signal, length):
     signalLength = len(signal)
     assert(signalLength >= length)
 
-    index = 0
-    candidate = signal[index:index + length]
-    while check_candidate(candidate) == False or index > signalLength - length:
-        index += 1
-        candidate = signal[index:index + length]
+    for i in range(signalLength - length):
+        candidate = signal[i:i + length]
+        if check_candidate(candidate):
+            return candidate, i + length
 
-    return candidate, index + length
+    raise ValueError(f"Signal does not contain marker of length {length}.")
 
 def main():
     signals = []
