@@ -2,11 +2,12 @@ def check_candidate(candidate):
     return len(set(candidate)) == len(candidate)
 
 def find_marker(signal, length):
-    assert(len(signal) >= length)
+    signalLength = len(signal)
+    assert(signalLength >= length)
 
     index = 0
     candidate = signal[index:index + length]
-    while check_candidate(candidate) == False:
+    while check_candidate(candidate) == False or index > signalLength - length:
         index += 1
         candidate = signal[index:index + length]
 
