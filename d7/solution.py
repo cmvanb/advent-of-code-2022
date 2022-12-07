@@ -30,9 +30,9 @@ class DirectoryNode(Node):
         self.children = children
 
     def __str__(self):
-        result = f""
+        result = ''
         if self.parent == None:
-            result += f"d "
+            result += 'd '
         result += f"{self.name} ({self.get_size()})\n"
         for i, key in enumerate(self.children):
             child = self.children[key]
@@ -40,17 +40,14 @@ class DirectoryNode(Node):
             spaces = '    '*max(0, child.get_depth() - 1)
             result += f"{nodeType} {spaces}└── {str(child)}"
             if i < len(self.children) - 1:
-                result += f"\n"
+                result += '\n'
         return result
 
     def add_child(self, child):
         self.children[child.name] = child
 
     def get_size(self):
-        result = 0
-        for key in self.children:
-            result += self.children[key].get_size()
-        return result
+        return sum(map(lambda n: n.get_size(), list(self.children.values())))
 
 
 def ParseFS(lines):
@@ -59,8 +56,6 @@ def ParseFS(lines):
     head = root
     for line in lines:
         if line[0] == '$':
-            listing = False
-            # command
             if line[2:4] == 'cd':
                 target = line[5:]
                 if target == '/':
