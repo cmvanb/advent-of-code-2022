@@ -103,7 +103,14 @@ def main():
 
     directories = DFSearch(root, lambda n: isinstance(n, DirectoryNode) and n.get_size() <= 100000)
     result = sum(map(lambda d: d.get_size(), directories))
-    print(f"The sum of the total sizes of all directories with total size <= 10000 is {result}.")
+    print(f"The sum of the total sizes of all directories with total size <= 100000 is {result}.")
+
+    totalSpace = 70000000
+    freeSpace = totalSpace - root.get_size()
+    freeSpaceNeeded = 30000000
+    directories = DFSearch(root, lambda n: isinstance(n, DirectoryNode) and freeSpace + n.get_size() >= freeSpaceNeeded)
+    result = sorted(directories, key=lambda d: d.get_size())
+    print(f"The smallest directory that would free enough space when deleted is `{result[0].name}` with a total size of {result[0].get_size()}.")
 
 
 if __name__ == '__main__':
