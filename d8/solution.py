@@ -30,43 +30,17 @@ class Trees():
             self.visible[x] = {}
             for y in range(self.gridSize):
                 self.visible[x][y] = False
-        tallest = 0
-        # From west side
-        for y in range(self.gridSize):
-            self.visible[0][y] = True
-            tallest = self.height[0][y]
-            for x in range(1, self.gridSize):
                 h = self.height[x][y]
-                if h > tallest:
-                    tallest = h
-                    self.visible[x][y] = True
-        # From north side
-        for x in range(self.gridSize):
-            self.visible[x][0] = True
-            tallest = self.height[x][0]
-            for y in range(1, self.gridSize):
-                h = self.height[x][y]
-                if h > tallest:
-                    tallest = h
-                    self.visible[x][y] = True
-        # From east side
-        for y in range(self.gridSize):
-            self.visible[self.gridSize - 1][y] = True
-            tallest = self.height[self.gridSize - 1][y]
-            for x in range(self.gridSize - 2, -1, -1):
-                h = self.height[x][y]
-                if h > tallest:
-                    tallest = h
-                    self.visible[x][y] = True
-        # From south side
-        for x in range(self.gridSize):
-            self.visible[x][self.gridSize - 1] = True
-            tallest = self.height[x][self.gridSize - 1]
-            for y in range(self.gridSize - 2, -1, -1):
-                h = self.height[x][y]
-                if h > tallest:
-                    tallest = h
-                    self.visible[x][y] = True
+                for dx, dy in [(1, 0), (0, 1), (-1, 0), (0, -1)]:
+                    tx = x
+                    ty = y
+                    while tx > 0 and tx < self.gridSize - 1 and ty > 0 and ty < self.gridSize - 1:
+                        if self.height[tx + dx][ty + dy] >= h:
+                            break
+                        tx += dx
+                        ty += dy
+                    if tx == 0 or tx == self.gridSize - 1 or ty == 0 or ty == self.gridSize - 1:
+                        self.visible[x][y] = True
 
     def count_visible(self):
         count = 0
