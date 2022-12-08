@@ -80,45 +80,31 @@ class Trees():
         return self.visible[x][y]
 
     def calculate_scenic_scores(self):
-        def view_dist_west(x, y, h):
-            dist = 0
-            while x > 0:
-                x -= 1
-                dist += 1
-                if self.height[x][y] >= h:
-                    break
-            return dist
-        def view_dist_north(x, y, h):
-            dist = 0
-            while y > 0:
-                y -= 1
-                dist += 1
-                if self.height[x][y] >= h:
-                    break
-            return dist
-        def view_dist_east(x, y, h):
-            dist = 0
-            while x < self.gridSize - 1:
-                x += 1
-                dist += 1
-                if self.height[x][y] >= h:
-                    break
-            return dist
-        def view_dist_south(x, y, h):
-            dist = 0
-            while y < self.gridSize - 1:
-                y += 1
-                dist += 1
-                if self.height[x][y] >= h:
-                    break
-            return dist
+        score = 0
+        dist = 0
         self.scenic = {}
         for x in range(self.gridSize):
             self.scenic[x] = {}
             for y in range(self.gridSize):
                 h = self.height[x][y]
-                self.scenic[x][y] = view_dist_west(x, y, h) * view_dist_north(x, y, h) * view_dist_east(x, y, h) * view_dist_south(x, y, h)
-                if self.scenic[x][y] > self.scenic[self.mostScenic[0]][self.mostScenic[1]]:
+                for dist in range(1, x + 1):
+                    if self.height[x - dist][y] >= h:
+                        break
+                score = dist
+                for dist in range(1, self.gridSize - x):
+                    if self.height[x + dist][y] >= h:
+                        break
+                score *= dist
+                for dist in range(1, y + 1):
+                    if self.height[x][y - dist] >= h:
+                        break
+                score *= dist
+                for dist in range(1, self.gridSize - y):
+                    if self.height[x][y + dist] >= h:
+                        break
+                score *= dist
+                self.scenic[x][y] = score
+                if score > self.scenic[self.mostScenic[0]][self.mostScenic[1]]:
                     self.mostScenic = (x, y)
 
 
