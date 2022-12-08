@@ -4,7 +4,6 @@ class Trees():
         self.height = {}
         self.visible = {}
         self.scenic = {}
-        self.mostScenic = (0, 0)
 
     def print_grid(self, lens):
         result = ''
@@ -26,6 +25,7 @@ class Trees():
 
     def calculate_visible(self):
         self.visible = {}
+        count = 0
         for x in range(self.gridSize):
             self.visible[x] = {}
             for y in range(self.gridSize):
@@ -40,21 +40,14 @@ class Trees():
                         tx += dx
                         ty += dy
                     if tx == 0 or tx == self.gridSize - 1 or ty == 0 or ty == self.gridSize - 1:
-                        self.visible[x][y] = True
-
-    def count_visible(self):
-        count = 0
-        for x in range(self.gridSize):
-            for y in range(self.gridSize):
-                if self.is_visible(x, y):
-                    count += 1
+                        if not self.visible[x][y]:
+                            count += 1
+                            self.visible[x][y] = True
         return count
-
-    def is_visible(self, x, y):
-        return self.visible[x][y]
 
     def calculate_scenic_scores(self):
         score = 0
+        highestScore = 0
         dist = 0
         self.scenic = {}
         for x in range(self.gridSize):
@@ -78,8 +71,9 @@ class Trees():
                         break
                 score *= dist
                 self.scenic[x][y] = score
-                if score > self.scenic[self.mostScenic[0]][self.mostScenic[1]]:
-                    self.mostScenic = (x, y)
+                if score > highestScore:
+                    highestScore = score
+        return highestScore
 
 
 def main():
@@ -94,14 +88,12 @@ def main():
     trees.parse_height(lines)
     # trees.print_grid(lambda x, y: trees.height[x][y])
 
-    trees.calculate_visible()
+    count = trees.calculate_visible()
     # trees.print_grid(lambda x, y: '1' if trees.visible[x][y] else '0')
-    count = trees.count_visible()
     print(f"{count} trees are visible from outside the grid.")
 
-    trees.calculate_scenic_scores()
+    highestScenicScore = trees.calculate_scenic_scores()
     # trees.print_grid(lambda x, y: str(trees.scenic[x][y]) + ' ')
-    highestScenicScore = trees.scenic[trees.mostScenic[0]][trees.mostScenic[1]]
     print(f"The highest possible scenic score among all trees is {highestScenicScore}.")
 
 if __name__ == '__main__':
