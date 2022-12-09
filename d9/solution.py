@@ -22,14 +22,15 @@ def simulate(knotCount, lines):
     visited = { (0, 0): True }
 
     for line in lines:
-        for _ in range(int(line[1])):
-            knots, visited = update_knots(knots, visited, DIRECTIONS[line[0]])
+        direction, steps = line.split()
+        for _ in range(int(steps)):
+            knots, visited = update_knots(knots, visited, DIRECTIONS[direction])
 
     return len(visited.keys())
 
 def main():
     with open('input.txt', 'r') as file:
-        lines = list(map(lambda l: l.strip('\n').split(' '), file.readlines()))
+        lines = list(map(lambda l: l.strip('\n'), file.readlines()))
 
     count = simulate(2, lines)
     print(f'Rope tail visited {count} unique positions.')
