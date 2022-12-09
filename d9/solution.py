@@ -1,30 +1,28 @@
+from typing import Tuple, Dict
+
 DIRECTIONS = { 'R': (1, 0), 'L': (-1, 0), 'D': (0, 1), 'U': (0, -1) }
 
-def step(position, direction):
+def step(position: Tuple[int, int], direction: Tuple[int, int]):
     return (position[0] + direction[0], position[1] + direction[1])
 
-def distance(a, b):
+def distance(a: Tuple[int, int], b: Tuple[int, int]):
     return max(abs(a[0] - b[0]),  abs(a[1] - b[1]))
 
-def update_knots(knots, visited, direction):
-    knots[0] = step(knots[0], direction)
-    for i in range(1, len(knots)):
-        if distance(knots[i], knots[i - 1]) >= 2:
-            diff = (knots[i - 1][0] - knots[i][0], knots[i - 1][1] - knots[i][1])
-            pull = (0 if diff[0] == 0 else int(diff[0]/abs(diff[0])), 0 if diff[1] == 0 else int(diff[1]/abs(diff[1])))
-            knots[i] = step(knots[i], pull)
-            if i == len(knots) - 1:
-                visited[knots[i]] = True
-    return knots, visited
-
-def simulate(knotCount, lines):
-    knots = [(0, 0) for _ in range(knotCount)]
-    visited = { (0, 0): True }
+def simulate(knotCount: int, lines: list[str]):
+    knots: list[Tuple[int, int]] = [ (0, 0) for _ in range(knotCount) ]
+    visited: Dict[Tuple[int, int], bool] = { (0, 0): True }
 
     for line in lines:
         direction, steps = line.split()
         for _ in range(int(steps)):
-            knots, visited = update_knots(knots, visited, DIRECTIONS[direction])
+            knots[0] = step(knots[0], DIRECTIONS[direction])
+            for i in range(1, len(knots)):
+                if distance(knots[i], knots[i - 1]) >= 2:
+                    diff = (knots[i - 1][0] - knots[i][0], knots[i - 1][1] - knots[i][1])
+                    pull = (0 if diff[0] == 0 else int(diff[0]/abs(diff[0])), 0 if diff[1] == 0 else int(diff[1]/abs(diff[1])))
+                    knots[i] = step(knots[i], pull)
+                    if i == len(knots) - 1:
+                        visited[knots[i]] = True
 
     return len(visited.keys())
 
